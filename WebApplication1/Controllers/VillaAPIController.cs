@@ -11,14 +11,21 @@ namespace WebApplication1.Controllers
     {
         /*Endpoint in API is something that accepts requests and sends back response*/
         [HttpGet]   //an end point
-        public IEnumerable<VillaDTO> GetVillas() {
-            return VillaStore.villaList;
+        public ActionResult<IEnumerable<VillaDTO>> GetVillas() {
+            return Ok(VillaStore.villaList);
         }
 
         [HttpGet("{id:int}")]
-        public VillaDTO GetVilla(int id)
+        public ActionResult<VillaDTO> GetVilla(int id)
         {
-            return VillaStore.villaList.FirstOrDefault(u => u.Id == id);
+            var villa = VillaStore.villaList.FirstOrDefault(u => u.Id == id);
+            if (id == 0){
+                return BadRequest();
+            }
+            if(id == null) { 
+                return NotFound();
+            }
+            return Ok(villa);
         }
     }
 }
