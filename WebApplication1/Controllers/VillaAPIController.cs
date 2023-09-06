@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using WebApplication1.Data;
 using WebApplication1.Model;
 using WebApplication1.Models.Dto;
@@ -15,7 +16,7 @@ namespace WebApplication1.Controllers
             return Ok(VillaStore.villaList);
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}", Name = "GetVilla")]
         public ActionResult<VillaDTO> GetVilla(int id)
         {
             var villa = VillaStore.villaList.FirstOrDefault(u => u.Id == id);
@@ -29,7 +30,7 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<VillaDTO> CreateVilla([FromBody]VillaDTO villaDTO)
@@ -43,7 +44,7 @@ namespace WebApplication1.Controllers
             villaDTO.Name = "Bliss View";
             villaDTO.Id = VillaStore.villaList.OrderByDescending(u => u.Id).FirstOrDefault().Id+1;
             VillaStore.villaList.Add(villaDTO);
-            return Ok(villaDTO);
+            return CreatedAtRoute("GetVilla", new {villaDTO.Id}, villaDTO);
         }
     }
 }
