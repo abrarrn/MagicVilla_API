@@ -35,13 +35,17 @@ namespace WebApplication1.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<VillaDTO> CreateVilla([FromBody]VillaDTO villaDTO)
         {
+            if(VillaStore.villaList.FirstOrDefault(p => p.Name.ToLower() == villaDTO.Name.ToLower()) != null)
+            {
+                ModelState.AddModelError("Custom Error", "This villa already exists");
+                return BadRequest(ModelState);
+            }
             if(villaDTO == null) { 
                 return  BadRequest(villaDTO); 
             }
             if(villaDTO.Id > 0) {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            villaDTO.Name = "Bliss View";
             villaDTO.Id = VillaStore.villaList.OrderByDescending(u => u.Id).FirstOrDefault().Id+1;
             VillaStore.villaList.Add(villaDTO);
             return CreatedAtRoute("GetVilla", new {villaDTO.Id}, villaDTO);
