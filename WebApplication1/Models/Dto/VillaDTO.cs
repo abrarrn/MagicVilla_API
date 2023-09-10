@@ -10,5 +10,7 @@ namespace WebApplication1.Models.Dto
         [Required]
         [MaxLength(30)]
         public string Name { get; set; }
+        public string? Occupancy { get; set; }
+        public string? Area { get; set; }
     }
 }
